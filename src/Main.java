@@ -3,12 +3,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class Main {
 
-    static int[] path = new int[1000];
+    static HashMap<Integer, ArrayList<Integer>> path = new HashMap<>();
+    static ArrayList<Integer> path2;
     static int ctr=0;
     static int[][] a;
+    static int maximumValue = 0;
 
     public static void main(String[] args) throws FileNotFoundException, IOException{
         final File file = new File("/Users/jedstevenmorillo/Downloads/skirsesort.kitzbuehel/4x4.txt");
@@ -27,6 +34,14 @@ public class Main {
         }*/
 
         System.out.println("Max Length of Calculated Path: " + String.valueOf(longestPath(a, 0,0,0)));
+
+        Set set = path.entrySet();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry)iterator.next();
+            // for (Integer value : entry.getValue())
+            System.out.println(entry);
+        }
     }
 
     public static void addAsArray(final String input, final int j, final boolean init) {
@@ -42,6 +57,8 @@ public class Main {
 
 
     public static int longestPath(final int[][] array, final int i, final int j, int max) {
+        if (i==array.length)
+            return max;
         if (j==array[0].length)
             return longestPath(array, i+1, 0, max);
         max = Math.max(getNextMax(array, i, j, array[i][j], true), max);
@@ -57,15 +74,25 @@ public class Main {
      * @param first
      * @return
      */
-    public static int getNextMax(final int[][] array, final int i, final int j, final int prevValue, final boolean first) {
+    public static int getNextMax(final int[][] array, final int i, final int j, int prevValue, final boolean first) {
+
+        if (i<0 || j<0 || j==array.length || i == array[0].length)
+            return 0;
+
+        if (first || (path2.size() != 0 && path2.get(path2.size()-1) < prevValue)) {
+            path2 = new ArrayList<>();
+            path.put(ctr++, path2);
+
+        }
 
         if (prevValue > array[i][j] || first) {
-            path[ctr++] = array[i][j];
+            prevValue = array[i][j];
+            path2.add(Integer.valueOf(prevValue));
 
-            int west = j != 0 ? getNextMax(array, i, j-1, array[i][j], false) : 0;
-            int east = j < array[0].length - 1 ? getNextMax(array, i, j+1, array[i][j], false) : 0;
-            int south = i < array.length - 1 ? getNextMax(array, i+1, j, array[i][j], false) : 0;
-            int north = i != 0 ? getNextMax(array, i-1, j, array[i][j], false) : 0;
+            int west = getNextMax(array, i, j-1, prevValue, false);
+            int east = getNextMax(array, i, j+1, prevValue, false);
+            int south = getNextMax(array, i+1, j, prevValue, false);
+            int north = getNextMax(array, i-1, j, prevValue, false);
 
             return 1 + max(north, south, east, west);
         }
