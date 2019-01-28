@@ -9,6 +9,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Gets the Maximum Value of Paths to take while skiing.
+ * @author JedMorillo
+ */
 public class Main {
 
     private static HashMap<Integer, ArrayList<Integer>> path = new HashMap<>();
@@ -16,6 +20,12 @@ public class Main {
     private static int ctr=0;
     private static int[][] a;
 
+    /**
+     *
+     * @param args
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public static void main(String[] args) throws FileNotFoundException, IOException{
         final File file = new File("/Users/jedstevenmorillo/Downloads/skirsesort.kitzbuehel/map.txt");
         final BufferedReader br = new BufferedReader(new FileReader(file));
@@ -65,7 +75,12 @@ public class Main {
         }
     }
 
-
+    /**
+     * gets the maximum number of paths.
+     * @param array - the whole array
+     * @param max - maximum number of paths, initially 0
+     * @return - returns the maximum number of paths.
+     */
     private static int longestPath(final int[][] array, int max) {
         for (int j = 0; j<array[0].length; j++) {
             for (int i = 0; i<array.length; i++) {
@@ -73,22 +88,16 @@ public class Main {
             }
         }
         return max;
-        // if (i==array.length)
-        //     return max;
-        // if (j==array[0].length)
-        //     return longestPath(array, i+1, 0, max);
-        // max = Math.max(getNextMax(array, i, j, array[i][j], true), max);
-        // return longestPath(array, i, j+1, max);
     }
 
     /**
      * gets the next maximum value.
-     * @param array
-     * @param i
-     * @param j
-     * @param prevValue
-     * @param first
-     * @return
+     * @param array - the whole array
+     * @param i - columnIndex
+     * @param j - rowIndex
+     * @param prevValue - the previous value to compare to current value
+     * @param first - if it is the first time the value is being compared to adjacent values
+     * @return - returns the next maximum value
      */
     private static int getNextMax(final int[][] array, final int i, final int j, int prevValue, final boolean first) {
 
@@ -113,17 +122,22 @@ public class Main {
     }
 
     /**
-     * gets the highest number
-     * @param north
-     * @param south
-     * @param east
-     * @param west
-     * @return
+     * gets the highest number.
+     * @param north - maximum value of paths if it takes north direction
+     * @param south - maximum value of paths if it takes south direction
+     * @param east - maximum value of paths if it takes east direction
+     * @param west - maximum value of paths if it takes west direction
+     * @return - returns highest number.
      */
     private static int max(final int north, final int south, final int east, final int west) {
         return Math.max(Math.max(north, south), Math.max(east, west));
     }
 
+    /**
+     * Puts the new path in a Map
+     * @param first - if it is the first time the value is being compared to adjacent values
+     * @param prevValue - the previous value to be compared to the last value in list
+     */
     private static void putPath(final boolean first, final int prevValue) {
         if (first || (path2.size() != 0 && path2.get(path2.size()-1) < prevValue)) {
             path2 = new ArrayList<>();
